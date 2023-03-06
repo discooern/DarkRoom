@@ -95,6 +95,19 @@ timer();
     left: 5%;
   }
 
+  @media screen and (max-width: 1000px){
+    .menu{
+      display: flex;
+      width: 100%;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+    }
+    .events{
+      display: flex;
+      width: 20rem;
+    }
+  }
+
 .inventoryContainer, .events{
   height: fit-content;
 }
