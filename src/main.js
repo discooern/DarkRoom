@@ -3,10 +3,10 @@ import './style.css'
 import App from './App.vue'
 import { ref } from "vue";
 import { reactive } from "vue";
-import { fireSize, setScale } from "../fire.js";
 
 let lightLevel = ref(100);
 let fireWood = ref(10);
+let fireScale = ref(1);
 
 async function stokeFire(){
 if (fireWood.value > 0){
@@ -57,6 +57,10 @@ document.querySelector('.startScreen').addEventListener('animationend', event =>
 async function fireTimer(){
   if(lightLevel.value > 0){
     lightLevel.value -= 1;
+    if (lightLevel.value > 40){
+      fireScale.value = lightLevel.value / 100;
+    }
+    document.getElementById('canvas').style.setProperty('--fireScale', `${ fireScale.value }`);
   }
 }
 
@@ -65,4 +69,3 @@ document.querySelector(".startBtn").addEventListener('click', e => {
 });
 
 export {stokeFire, lightLevel, fireWood};
-

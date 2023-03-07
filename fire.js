@@ -186,7 +186,7 @@ class Stage {
         this.onResize = function () {
             this.app.renderer.resize(window.innerWidth, window.innerHeight);
             this.stage.position.x = window.innerWidth / 2;
-            this.stage.position.y = window.innerHeight * 0.75;
+            this.stage.position.y = window.innerHeight / 2;
         };
         this.add = function (element, container = this.stage) {
             container.addChild(element);
@@ -250,34 +250,34 @@ class Stage {
         ember.stoke();
     }
 
-    remapFlames() {
-        // console.log(this.config);
-        // for (let i = 0; i < this.flames.length; i++){
-        // }
-        // this.flames = [
-        //     { color: 0xE23B00, scale: 1, offset: -30 },
-        //     { color: 0xFE8200, scale: 1, offset: -10 },
-        //     { color: 0xFBE416, scale: 0.9, offset: 10 },
-        //     { color: 0xFDFDB4, scale: 0.7, offset: 30 }
-        // ];
-            // this.flames.map((flamessettings) => {
-            //     this.fire.scale = settings.scale * fireSize.value;
-            // });
-            // for (let i = 0; i < this.flames.length; i++){
-            //     console.log(this.config);
-            //     this.flames[i].settings = this.config;
-            // }
-        // for (let i = 0; i > this.flames.length; i++){
-        // this.flames.map(settings, {
-        //     color: this.flames[i].color,
-        //     scale: fireScale.value,
-        //     offset: this.flames[i].offset
-        // });
-        // }
-        for (let i = 0; i < this.flames.length; i++){
-            this.flames[i].scale = 1 * fireSize.value;
-        }
-    };
+    // remapFlames() {
+    //     // console.log(this.config);
+    //     // for (let i = 0; i < this.flames.length; i++){
+    //     // }
+    //     // this.flames = [
+    //     //     { color: 0xE23B00, scale: 1, offset: -30 },
+    //     //     { color: 0xFE8200, scale: 1, offset: -10 },
+    //     //     { color: 0xFBE416, scale: 0.9, offset: 10 },
+    //     //     { color: 0xFDFDB4, scale: 0.7, offset: 30 }
+    //     // ];
+    //         // this.flames.map((flamessettings) => {
+    //         //     this.fire.scale = settings.scale * fireSize.value;
+    //         // });
+    //         // for (let i = 0; i < this.flames.length; i++){
+    //         //     console.log(this.config);
+    //         //     this.flames[i].settings = this.config;
+    //         // }
+    //     // for (let i = 0; i > this.flames.length; i++){
+    //     // this.flames.map(settings, {
+    //     //     color: this.flames[i].color,
+    //     //     scale: fireScale.value,
+    //     //     offset: this.flames[i].offset
+    //     // });
+    //     // }
+    //     for (let i = 0; i < this.flames.length; i++){
+    //         this.flames[i].scale = 1 * fireSize.value;
+    //     }
+    // };
 }
 
 // let loop = ref(0)
@@ -294,10 +294,10 @@ class Stage {
 
 let stage = new Stage(document.getElementById('canvas'), pixelate, background);
 
-async function setScale(){
-    stage.remapFlames();
-}
+// async function setScale(){
+//     stage.remapFlames();
+// }
 
-setScale();
+// setScale();
 
-export { fireSize, setScale };
+// export { fireSize, setScale };

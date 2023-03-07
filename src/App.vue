@@ -6,7 +6,6 @@ import $ from 'jquery';
 
 import {lightLevel, fireWood} from './main.js';
 import { SourceNode } from "source-map";
-import { fireSize, setScale } from '../fire';
 
 let events = reactive([]);
 events.push("A dark room");
@@ -28,11 +27,6 @@ async function eventTimer(){
 async function fireTimer(){
   if (lightLevel != null){
     light.value = lightLevel.value;
-    if (light.value < 60 && light.value > 30 && (light.value % 2) == 0){
-      fireSize.value = light.value / 100 * 2;
-      if (fireSize.value > 1) { fireSize.value = 1; }
-      setScale()
-    }
     if (light.value == 30){
       newEvent = "The room is getting colder."
     }
@@ -93,7 +87,6 @@ timer();
     position: absolute;
     top: 5%;
     left: 5%;
-    font-size: 1rem;
   }
 
 .inventoryContainer, .events{
