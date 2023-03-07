@@ -7,21 +7,41 @@ import $ from 'jquery';
 import {lightLevel, fireWood} from './main.js';
 import { SourceNode } from "source-map";
 
-let events = reactive([]);
-events.push("A dark room");
+// Events for sidebar showing current events, ex 'The room is getting colder' when the lightlevel reaches a certain point
+let events = reactive([
+  "A dark room"
+]);
+
+// title: "Title", desc: "Description, options: "Different encounter options", outcomes: "corresponding outcomes to selecting a button to press".
+// outcomes input = 
+// Number = quantity
+// W = Wood
+// NA = nothing happens
+// 'Name()' = function call
+
+let encounters = reactive([
+  { title: "Title", desc: "Description", options: "Yes No Maybe", outcomes: "10W, -5W, NA" }
+]);
 
 let newEvent = ref();
 let light = ref(100);
 let wood = ref(10);
 
 async function eventTimer(){
+  let rnd = Math.random(0,10);
+  
+
   if (newEvent != null){
     if (events[4] != null){
-      await events.shift();
-    }
+      events.shift();
+  }
     await events.push(newEvent);
     newEvent = null;
   }
+}
+
+async function openEncounterMenu(){
+
 }
 
 async function fireTimer(){
@@ -76,6 +96,7 @@ timer();
   <iframe id="sound" width="0" height="0" src="https://www.youtube.com/embed/6VB4bgiB0yA?rel=0" title="YouTube video player" frameborder="0"></iframe>
 </template>
 <style scoped>
+
 .gradient{
   background-image: linear-gradient(to right, yellow , red);
   width: 200px;
@@ -87,6 +108,7 @@ timer();
     position: absolute;
     top: 5%;
     left: 5%;
+    width: 10rem;
   }
 
 .inventoryContainer, .events{
@@ -97,14 +119,14 @@ timer();
   display: flex;
 }
 
+.spanFlex{
+  justify-content: space-around;
+}
+
 .spanFlexEvents{
   flex-direction: column;
   position: absolute;
-  left: 5%;
-}
-
-.counterName{
-  margin-right: 10px;
+  width: 100%;
 }
 
 .counter, .counterName, .eventsView{
@@ -113,7 +135,6 @@ timer();
 
 .eventsView{
   position: relative;
-  top: 10px;
   font-style: italic;
   margin: 0;
 }
@@ -129,7 +150,6 @@ timer();
 .enterTransition-leave-to{
   transform: translateY(-30px);
   opacity: 0;
-  position: absolute;
 }
 
 .progressBar{
@@ -140,9 +160,20 @@ timer();
   height: 20px;
   padding: 2px;
   border-radius: 5px;
+  position: absolute;
+  top: 25%;
+  bottom: 75%;
+  transform: translate(-50%, -50%);
 }
 
-.stokeP, .progressBar, .stokeBtn{
+@media screen and (max-width: 1000px){
+  .progressBar{
+    top: 75% !important;
+    bottom: 25% Im !important;
+  }
+}
+
+.stokeP, .stokeBtn{
   position: absolute;
   top: 30%;
   bottom: 70%;

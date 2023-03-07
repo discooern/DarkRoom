@@ -32,26 +32,30 @@
   display: flex;
   width: 25rem;
   height: 6.2rem;
-  margin-bottom: 10px;
   justify-content: space-around;
   font-size: 18px;
+  position: absolute;
+  top: 35%;
+  bottom: 65%;
   -webkit-text-stroke-width: .4px;
   -webkit-text-stroke-color: white;
   border-bottom: 2px gray solid
-
 }
 
 .startBtn{
   width: 200px;
   height: 50px;
   font-size: 20px;
+  position: absolute;
+  top: 60%;
+  bottom: 40%;
 }
+
 
 .startScreen{
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center; 
   top: 0;
   left: 0;
@@ -79,6 +83,7 @@ padding: 0;
   from {opacity: 0;}
   to {opacity: 1;}
 }
+
 
 .title1, .title2, .title3{
  animation-name: slideIn;
