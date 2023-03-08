@@ -4,7 +4,7 @@ import { reactive } from "vue";
 import ProgressBar from 'primevue/progressbar';
 import $ from 'jquery';
 
-import {lightLevel, fireWood} from './main.js';
+import {lightLevel, fireWood, fireTimerJS} from './main.js';
 import { SourceNode } from "source-map";
 
 // Events for sidebar showing current events, ex 'The room is getting colder' when the lightlevel reaches a certain point
@@ -20,7 +20,20 @@ let events = reactive([
 // 'Name()' = function call
 
 let encounters = reactive([
-  { title: "Title", desc: "Description", options: "Yes No Maybe", outcomes: "10W, -5W, NA" }
+  { title: "Title", desc: "Description", options: "Yes No Maybe", outcomes: "10 W,-5 W,NA", event: "You gained wood,You lost wood,Nothing happened" }
+]);
+let currentEncounter = reactive([
+  { title: "Title", desc: "Description", options: "Yes No Maybe", outcomes: "10 W,-5 W,NA", event: "You gained wood,You lost wood,Nothing happened" }
+]);
+let options = reactive([
+  "Yes",
+  "No",
+  "Maybe"
+]);
+let results = reactive([
+  "10 W",
+  "-5 W",
+  "NA NA"
 ]);
 
 let newEvent = ref();
@@ -28,9 +41,13 @@ let light = ref(100);
 let wood = ref(10);
 
 async function eventTimer(){
-  let rnd = Math.random(0,10);
-  
-
+  let encounterTime = Math.random(0,1) * 100;
+  console.log(encounterTime)
+  if (Math.floor(encounterTime) == 0){
+    console.log("getting encounter")
+    let getEncounter = Math.random(0, encounters.length);
+    runEncounterMenu(encounters[Math.floor(getEncounter)]);
+  }
   if (newEvent != null){
     if (events[4] != null){
       events.shift();
@@ -40,8 +57,37 @@ async function eventTimer(){
   }
 }
 
-async function openEncounterMenu(){
+// encounter parameter ex ( { title: "Title", desc: "Description", options: "Yes No Maybe", outcomes: "10 W,-5 W,NA NA", event: "You gained wood,You lost wood,Nothing happened" } )
+async function runEncounterMenu(encounter){
+  options = encounter.options.split(" ");
+  results = encounter.outcomes.split(",");
+  document.getElementById('encounterMenu').style.opacity = 1;
+  currentEncounter = encounter;
+  console.log(currentEncounter);
+  console.log(options);
+  stopTimer();
+}
 
+async function getResult(option){
+  let result = results[options.indexOf(option)].split(" ");
+  let getNumber = result[0];
+  let getResourceType = result[1];
+
+  if (getNumber != "NA"){
+    if (getResourceType == "W"){
+      fireWood.value += parseInt(getNumber);
+    }
+  }
+
+  document.getElementById('encounterMenu').style.opacity = 0;
+  document.getElementById('resultMenu').style.opacity = 1;
+}
+
+async function resultMenu(){
+  document.getElementById('resultMenu').style.opacity = 0;
+  document.getElementById('resultTitle').innerHTML = currentEncounter.title;
+
+  timer();
 }
 
 async function fireTimer(){
@@ -64,9 +110,20 @@ $(document).ready(function() {
     ev.preventDefault();
 });
 
+let myTimeout1;
+let myTimeout2;
+let myTimeout3;
+
+const stopTimer = async() => {
+  clearTimeout(myTimeout1);
+  clearTimeout(myTimeout2);
+  clearTimeout(myTimeout3);
+}
+
 const timer = async () => {
-  const myTimeout1 = setInterval(fireTimer, 250);
-  const myTimeout2 = setInterval(eventTimer, 1000);
+  myTimeout1 = setInterval(fireTimer, 250);
+  myTimeout2 = setInterval(eventTimer, 1000);
+  myTimeout3 = setInterval(fireTimerJS, 250);
 }
 
 timer();
@@ -93,9 +150,40 @@ timer();
     <p class="gradient"></p>
   </ProgressBar>
 
+  <div id="encounterMenu">
+    <h3 class="encounterTitle">A Stranger</h3>
+    <h4 class="encounterDesc">He offers you something in exchange for warming himself by your fire</h4>
+    <button class="encounterBtn" v-for="item in options" :key="item" @click="getResult(item)">{{ item }}</button>
+  </div>
+
+  <div id="resultMenu">
+    <h3 class="resultTitle" id="resultTitle"></h3>
+    <h4 class="resultDesc" id="resultDesc"></h4>
+    <button class="resultBtn" id="resultBtn" @click="resultMenu()"></button>
+  </div>
+
   <iframe id="sound" width="0" height="0" src="https://www.youtube.com/embed/6VB4bgiB0yA?rel=0" title="YouTube video player" frameborder="0"></iframe>
 </template>
 <style scoped>
+#encounterMenu, #resultMenu{
+  position: absolute;
+  height: fit-content;
+  width: fit-content;
+  opacity: 0;
+  padding: 2rem;
+  background: whitesmoke;
+  border-radius: 40px;
+  transition: opacity 1s ease-in-out;
+}
+
+.encounterBtn, .resultBtn{
+  margin: .5rem;
+  border: 1px solid darkgray;
+  transition: border .2s ease-in-out;
+}
+.encounterBtn:hover, .resultBtn:hover{
+  border: 1px solid black;
+}
 
 .gradient{
   background-image: linear-gradient(to right, yellow , red);
@@ -129,11 +217,11 @@ timer();
   width: 100%;
 }
 
-.counter, .counterName, .eventsView{
+.counter, .counterName, .eventsView, .encounterDesc, .encounterTitle, .resultDesc, .resultTitle{
   color: rgb(134, 134, 134)
 }
 
-.eventsView{
+.eventsView, .encounterDesc, .resultDesc{
   position: relative;
   font-style: italic;
   margin: 0;

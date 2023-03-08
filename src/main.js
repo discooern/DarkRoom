@@ -41,20 +41,15 @@ document.querySelector('.title3').addEventListener('animationend', e => {
   document.querySelector('.title3').style.opacity = 1;
 });
 
-const timer = async () => {
-  const myTimeout = setInterval(fireTimer, 250);
-}
-
-
 document.querySelector('.startScreen').addEventListener('animationend', event => {
   if (event.target !== event.currentTarget) {
     return; // Ignore it
   }
   document.querySelector('.startScreen').remove();
-  timer();
+  timerJS();
 });
 
-async function fireTimer(){
+async function fireTimerJS(){
   if(lightLevel.value > 0){
     lightLevel.value -= 1;
     if (lightLevel.value > 40){
@@ -68,4 +63,4 @@ document.querySelector(".startBtn").addEventListener('click', e => {
   startGame();
 });
 
-export {stokeFire, lightLevel, fireWood};
+export {stokeFire, lightLevel, fireWood, fireTimerJS};
