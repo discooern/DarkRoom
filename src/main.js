@@ -21,8 +21,17 @@ if (fireWood.value > 0){
   }
 }
 
+async function startChopping(){
+  let woodTimeout = setTimeout(chopWood, 5000);
+}
+
+async function chopWood(){
+  fireWood.value += 5;
+}
+
 let objectDocument;
 async function startGame(){
+  document.querySelector('.startBtn').disabled = true;
   createApp(App).mount('#app');
   objectDocument = await document.querySelector('.startScreen');
   objectDocument.style.animationName = "dissappear";
@@ -73,5 +82,8 @@ async function fireTimerJS(){
 document.querySelector(".startBtn").addEventListener('click', e => {
   startGame();
 });
+document.querySelector('#woodBtn').addEventListener('click', e => {
+  startChopping();
+})
 
 export {stokeFire, lightLevel, fireWood, fireTimerJS};

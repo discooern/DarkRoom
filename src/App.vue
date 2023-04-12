@@ -48,8 +48,8 @@ let menu = ref("");
 let newEvent = ref();
 let light = ref(100);
 let wood = ref(10);
-
-document.querySelector('#progressBar').classList.toggle("m-fadeIn");
+let currentLocation = ref("room");
+let roomActive = ref(true);
 
 async function eventTimer() {
   let encounterTime = Math.random(0, 1) * 1;
@@ -58,16 +58,19 @@ async function eventTimer() {
     let getEncounter = Math.random(0, encounters.length);
     runEncounterMenu(encounters[Math.floor(getEncounter)]);
   }
-  if (newEvent != null) {
+  if (newEvent[0] != null && newEvent[1] == currentLocation.value) {
     if (events[4] != null) {
       events.shift();
     }
-    await events.push(newEvent);
+    await events.push(newEvent[0]);
     console.log(events.length);
-    newEvent = null;
+  }
+  if (light.value > 50 && newEvent[0] == "The fire is roaring."){
+    newEvent = ["The room is warm.", "room"];
+  } else {
+    newEvent = [];
   }
 }
-
 // encounter parameter ex ( { title: "Title", desc: "Description", options: "Yes:No:Maybe", outcomes: "10 W:-5 W:NA NA", eventOutcomes: "You gained wood:You lost wood:Nothing happened" } )
 async function runEncounterMenu(encounter) {
   // Gets options, Buttons for selection in encounter.
@@ -128,28 +131,21 @@ async function resultMenu() {
 }
 
 function area(location) {
+  currentLocation.value = location;
   if (location == "room"){
     document.getElementById('roomBtn').style.color = "white";
     document.getElementById('forestBtn').style.color = "rgb(134, 134, 134)";
-    var nodes = document.getElementById('progressBar').getElementsByTagName('*');
-    for(var i = 0; i < nodes.length; i++){
-     nodes[i].style.display = "block";
-    }
-    newEvent = "A dark room"
+    if (light.value == 0) {newEvent = ["The room is cold.", "room"]}
+    else if (light.value > 0 && light.value < 50) {newEvent = ["The room is mild.", "room"]}
+    else if (light.value > 50 && light.value < 100) {newEvent = ["The fire is roaring.", "room"]}
   }
   if (location == "forest")
   {
     document.getElementById('forestBtn').style.color = "white";
     document.getElementById('roomBtn').style.color = "rgb(134, 134, 134)";
-    var nodes = document.getElementById('progressBar').getElementsByTagName('*');
-    for(var i = 0; i < nodes.length; i++){
-     nodes[i].style.display = "none";
-    }
-    newEvent = "The forest is silent";
+    newEvent = ["The forest is silent", "forest"];
   }
-
-  document.querySelector('#progressBar').classList.toggle("m-fadeIn");
-  document.querySelector('#progressBar').classList.toggle("m-fadeOut");
+  roomActive.value = !roomActive.value;
   changeArea(location);
 }
 
@@ -157,12 +153,14 @@ async function fireTimer() {
   if (lightLevel != null) {
     light.value = lightLevel.value;
     if (light.value == 30) {
-      newEvent = "The room is getting colder."
+      newEvent = ["The room is mild.", "room"];
+    } else if (light.value == 0 && events[events.length - 1] != "The room is cold."){
+      newEvent = ["The room is cold.", "room"];
     }
   }
   if (fireWood != null) {
     if (wood.value - 1 == fireWood.value) {
-      newEvent = "The fire burns brighter."
+      newEvent = ["The fire is roaring.", "room"];
     }
     wood.value = fireWood.value;
   }
@@ -210,11 +208,11 @@ timer();
   </div>
 
   <div class="locationMenu">
-    <button id="roomBtn" @click="area('room')">Room</button>
-    <button id="forestBtn" @click="area('forest')">Forest</button>
+    <button id="roomBtn" :disabled="roomActive" @click="area('room')">Room</button>
+    <button id="forestBtn" :disabled="!roomActive" @click="area('forest')">Forest</button>
   </div>
 
-  <ProgressBar id="progressBar" :value="light">
+  <ProgressBar id="progressBar" :class="{ fadeIn : roomActive, fadeOut: !roomActive }" :value="light">
     <p class="gradient"></p>
   </ProgressBar>
 
@@ -430,12 +428,12 @@ timer();
   transform: translateX(-50%);
 }
 
-.m-fadeOut {
+.fadeOut {
   visibility: hidden;
   opacity: 0;
   transition: visibility 2s linear 300ms, opacity 2s;
 }
-.m-fadeIn {
+.fadeIn {
   visibility: visible;
   opacity: 1;
   transition: visibility 2s linear 0s, opacity 2s;
